@@ -1,0 +1,17 @@
+name: react-native-android-build
+on: workflow_dispatch
+jobs:
+  build:
+    name: Install and publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - uses: expo/expo-github-action@v6
+        with:
+          eas-version: latest
+          token: ${{'b_faDA2af6P8PKW51i5c7IJ9PtCTA91vc-vIe3Pg'}}
+      - run: yarn install
+      - run: eas build --platform android
