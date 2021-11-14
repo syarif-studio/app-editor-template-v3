@@ -15,5 +15,5 @@ jobs:
           expo-version: 4.x
           token: ${{'b_faDA2af6P8PKW51i5c7IJ9PtCTA91vc-vIe3Pg'}}
       - run: yarn install
-      - run: expo build:android -t apk
+      # - run: expo build:android -t apk
       - run: eas build --platform android
