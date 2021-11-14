@@ -1,21 +1,89 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
+import { View, Platform } from "react-native";
+import { config } from "./config";
+import Route from "./src/Route";
+import { RecoilRoot } from "recoil";
+import * as eva from "@eva-design/eva";
+import { ApplicationProvider } from "@ui-kitten/components";
+import { SWRConfig } from "swr";
+import { default as mappingFont } from "./mapping.json";
+import { useFonts } from "expo-font";
+import fontRegular from "./assets/fonts/font-regular.ttf";
+import fontBold from "./assets/fonts/font-bold.ttf";
+import fontSemibold from "./assets/fonts/font-semibold.ttf";
+import Init from "./src/Init";
+import AppLoading from "expo-app-loading";
 
-export default function App() {
+const fetcher = (key) =>
+  fetch(config.baseUrl + "wp-json/wprne/v1/" + key).then((r) => r.json());
+
+function AppProvider({ children }) {
+  const insets = useSafeAreaInsets();
+  const { colorMode, colorTheme } = config;
+
+  const theme =
+    colorMode === "dark"
+      ? { ...eva.dark, ...colorTheme }
+      : { ...eva.light, ...colorTheme };
+
+  const mapping =
+    Platform.OS === "android"
+      ? {
+          components: {
+            Popover: {
+              meta: { parameters: { top: { type: "number" } } },
+              appearances: {
+                default: {
+                  mapping: { top: insets.top },
+                },
+              },
+            },
+          },
+          ...mappingFont,
+        }
+      : mappingFont;
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <ApplicationProvider {...eva} theme={theme} customMapping={mapping}>
+      {children}
+    </ApplicationProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  const [loaded] = useFonts({
+    "Font-Regular": fontRegular,
+    "Font-Bold": fontBold,
+    "Font-SemiBold": fontSemibold,
+  });
+
+  if (!loaded) {
+    return <AppLoading />;
+  }
+
+  return (
+    <View style={{ flex: 1 }}>
+      <Init />
+      <RecoilRoot>
+        <SWRConfig
+          value={{
+            revalidateOnFocus: false,
+            refreshInterval: 0,
+            errorRetryCount: 3,
+            fetcher,
+          }}
+        >
+          <SafeAreaProvider>
+            <AppProvider>
+              <Route />
+            </AppProvider>
+          </SafeAreaProvider>
+        </SWRConfig>
+      </RecoilRoot>
+    </View>
+  );
+}
