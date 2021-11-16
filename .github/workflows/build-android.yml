@@ -13,8 +13,8 @@ jobs:
         with:
           eas-version: latest
           expo-version: 4.x
-          expo-username: username
-          expo-password: pass
+          username: username
+          password: pass
       - run: yarn install
       - run: expo build:android -t apk
       - run: eas build --platform android
