@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  SafeAreaProvider,
-  // useSafeAreaInsets,
-  SafeAreaView,
-} from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { View, Platform } from "react-native";
 import { config } from "./config";
 import Route from "./src/Route";
@@ -18,35 +14,18 @@ import fontBold from "./assets/fonts/font-bold.ttf";
 import fontSemibold from "./assets/fonts/font-semibold.ttf";
 import Init from "./src/Init";
 import AppLoading from "expo-app-loading";
+import { StatusBar } from "expo-status-bar";
+
+const { colorMode, colorTheme } = config;
 
 const fetcher = (key) =>
   fetch(config.baseUrl + "wp-json/wprne/v1/" + key).then((r) => r.json());
 
 function AppProvider({ children }) {
-  // const insets = useSafeAreaInsets();
-  const { colorMode, colorTheme } = config;
-
   const theme =
     colorMode === "dark"
       ? { ...eva.dark, ...colorTheme }
       : { ...eva.light, ...colorTheme };
-
-  // const mapping =
-  //   Platform.OS === "android"
-  //     ? {
-  //         components: {
-  //           Popover: {
-  //             meta: { parameters: { top: { type: "number" } } },
-  //             appearances: {
-  //               default: {
-  //                 mapping: { top: insets.top },
-  //               },
-  //             },
-  //           },
-  //         },
-  //         ...mappingFont,
-  //       }
-  //     : mappingFont;
 
   return (
     <ApplicationProvider {...eva} theme={theme} customMapping={mappingFont}>
@@ -85,6 +64,7 @@ export default function App() {
           </SafeAreaView>
         </SWRConfig>
       </RecoilRoot>
+      <StatusBar style={colorMode === "dark" ? "light" : "dark"} />
     </View>
   );
 }
