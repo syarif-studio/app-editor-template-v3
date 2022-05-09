@@ -1,7 +1,8 @@
 import React from "react";
 import {
   SafeAreaProvider,
-  useSafeAreaInsets,
+  // useSafeAreaInsets,
+  SafeAreaView,
 } from "react-native-safe-area-context";
 import { View, Platform } from "react-native";
 import { config } from "./config";
@@ -22,7 +23,7 @@ const fetcher = (key) =>
   fetch(config.baseUrl + "wp-json/wprne/v1/" + key).then((r) => r.json());
 
 function AppProvider({ children }) {
-  const insets = useSafeAreaInsets();
+  // const insets = useSafeAreaInsets();
   const { colorMode, colorTheme } = config;
 
   const theme =
@@ -30,25 +31,25 @@ function AppProvider({ children }) {
       ? { ...eva.dark, ...colorTheme }
       : { ...eva.light, ...colorTheme };
 
-  const mapping =
-    Platform.OS === "android"
-      ? {
-          components: {
-            Popover: {
-              meta: { parameters: { top: { type: "number" } } },
-              appearances: {
-                default: {
-                  mapping: { top: insets.top },
-                },
-              },
-            },
-          },
-          ...mappingFont,
-        }
-      : mappingFont;
+  // const mapping =
+  //   Platform.OS === "android"
+  //     ? {
+  //         components: {
+  //           Popover: {
+  //             meta: { parameters: { top: { type: "number" } } },
+  //             appearances: {
+  //               default: {
+  //                 mapping: { top: insets.top },
+  //               },
+  //             },
+  //           },
+  //         },
+  //         ...mappingFont,
+  //       }
+  //     : mappingFont;
 
   return (
-    <ApplicationProvider {...eva} theme={theme} customMapping={mapping}>
+    <ApplicationProvider {...eva} theme={theme} customMapping={mappingFont}>
       {children}
     </ApplicationProvider>
   );
@@ -77,11 +78,11 @@ export default function App() {
             fetcher,
           }}
         >
-          <SafeAreaProvider>
+          <SafeAreaView style={{ flex: 1 }}>
             <AppProvider>
               <Route />
             </AppProvider>
-          </SafeAreaProvider>
+          </SafeAreaView>
         </SWRConfig>
       </RecoilRoot>
     </View>
