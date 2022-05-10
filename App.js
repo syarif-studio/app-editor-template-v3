@@ -57,11 +57,11 @@ export default function App() {
             fetcher,
           }}
         >
-          <SafeAreaView style={{ flex: 1 }}>
+          <SafeAreaProvider>
             <AppProvider>
               <Route />
             </AppProvider>
-          </SafeAreaView>
+          </SafeAreaProvider>
         </SWRConfig>
       </RecoilRoot>
       <StatusBar style={colorMode === "dark" ? "light" : "dark"} />

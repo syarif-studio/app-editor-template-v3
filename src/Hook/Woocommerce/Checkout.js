@@ -213,6 +213,5 @@ export function useShippingMethods() {
   };
 
   const shippingMethods = useSWRCache(shippingMethodUrl, fetchShippingMethods);
-
   return shippingMethods;
 }

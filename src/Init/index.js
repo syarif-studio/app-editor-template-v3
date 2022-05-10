@@ -21,7 +21,6 @@ function PushNotif() {
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
-      console.log({ token });
       fetch(config.baseUrl + "/wp-json/wprne/v1/notif/add_token", {
         method: "post",
         headers: { "Content-Type": "application/json" },

@@ -21,6 +21,7 @@ export default function Route() {
         screenOptions={{
           ...TransitionPresets.SlideFromRightIOS,
         }}
+        // headerMode="none"
       >
         {firstBottomNav && (
           <Stack.Screen

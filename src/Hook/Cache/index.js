@@ -75,13 +75,14 @@ export function syncWithAsyncStorage(parser) {
 }
 
 export function useCache(key, enable) {
+  if (typeof key === "function") {
+    key = key();
+  }
+
   const { data, mutate } = useSWR(`cache@${key}`, {
     initialData: null,
     fetcher: null,
   });
-  if (typeof key === "function") {
-    key = key();
-  }
 
   useEffect(() => {
     if (key && enable && !data) {
@@ -97,6 +98,11 @@ export function useCache(key, enable) {
 export function useSWRCache(key, fetchData) {
   const { data } = useSWR(key, fetchData);
   const cache = useCache(key, !data);
+
+  if (!cache) {
+    return data;
+  }
+
   if (data && cache && !equal(data, cache)) {
     return data;
   }
