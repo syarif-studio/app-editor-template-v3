@@ -53,7 +53,7 @@ export const ShippingTab = ({
   }, [shippingMethods, shipping, setShipping, index]);
 
   return (
-    <View>
+    <View style={{ marginTop: 16 }}>
       <Text category="h4">{shippingTitle ?? "Shipping"}</Text>
       <RadioGroup
         selectedIndex={index}

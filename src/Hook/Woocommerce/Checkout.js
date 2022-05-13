@@ -7,6 +7,7 @@ import { useNavigation, CommonActions } from "@react-navigation/native";
 import { useSWRCache } from "../Cache";
 import { useWooSettings } from "./Utility";
 import { countries } from "./Countries";
+import { useAsyncStorage } from "@react-native-async-storage/async-storage";
 
 export const wooBillingData = atom({
   key: "wooBillingData",
@@ -24,6 +25,11 @@ export const wooCountry = atom({
     name: null,
     states: [],
   },
+});
+
+export const wooPlaceOrderMessage = atom({
+  key: "wooPlaceOrderMessage",
+  default: null,
 });
 
 export function useBillingCountry() {
@@ -111,12 +117,23 @@ export function useNoBillingCountry() {
 export function usePlaceOrder() {
   const {
     cart: { items },
+    resetCart,
   } = useCart();
 
   const billingData = useRecoilValue(wooBillingData);
   const shipping = useRecoilValue(wooShipping);
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
+  const { getItem, setItem } = useAsyncStorage("userOrders");
+
+  const updateCartOrderData = async (orderId) => {
+    const item = await getItem();
+    const items = JSON.parse(item);
+    const newItems =
+      items && Array.isArray(items) ? [...items, orderId] : [orderId];
+    await setItem(JSON.stringify(newItems));
+    resetCart();
+  };
 
   const onPlaceOrder = ({ checkoutUrl }) => {
     const lineItems = items?.map((item) => ({
@@ -143,6 +160,7 @@ export function usePlaceOrder() {
         }
         checkoutUrl = checkoutUrl.replace(/\/+$/, "");
         if (response?.data?.id) {
+          updateCartOrderData(response.data.id);
           const params = {
             url: `${checkoutUrl}/order-pay/${response?.data?.id}?pay_for_order=true&key=${response?.data?.order_key}`,
             title: "Payment",
