@@ -1,45 +1,45 @@
-import React from "react"
-import { View } from "react-native"
-import { SearchBar } from "react-native-elements"
-import debounce from "lodash.debounce"
+import React from "react";
+import { View } from "react-native";
+import { SearchBar } from "react-native-elements";
+import debounce from "lodash.debounce";
 import {
   PostRoot,
   ProductRoot,
   useGetProductData,
-  useGetPostData
-} from "../Hook"
-import { FlatListComp } from "./GridPost"
+  useGetPostData,
+} from "../Hook";
+import { FlatListComp } from "./GridPost";
 
 const ProductList = ({ query, postType, onLoading, ...props }) => {
-  const { data, isLoading } = useGetProductData(query)
+  const { data, isLoading } = useGetProductData(query);
 
   React.useEffect(() => {
-    onLoading(isLoading)
-  }, [isLoading, onLoading])
+    onLoading(isLoading);
+  }, [isLoading, onLoading]);
 
   return (
     <ProductRoot query={query}>
       <FlatListComp data={data} postType={postType} {...props} />
     </ProductRoot>
-  )
-}
+  );
+};
 
 const PostList = ({ query, postType, onLoading, ...props }) => {
-  const { data, isLoading } = useGetPostData(query, postType)
+  const { data, isLoading } = useGetPostData(query, postType);
 
   React.useEffect(() => {
-    onLoading(isLoading)
-  }, [isLoading, onLoading])
+    onLoading(isLoading);
+  }, [isLoading, onLoading]);
 
   return (
     <PostRoot query={query}>
       <FlatListComp data={data} postType={postType} {...props} />
     </PostRoot>
-  )
-}
+  );
+};
 
 export const SearchPostComp = ({ searchQuery, ...props }) => {
-  const postType = props?.postType
+  const postType = props?.postType;
 
   return postType === "product" ? (
     <ProductList
@@ -48,27 +48,27 @@ export const SearchPostComp = ({ searchQuery, ...props }) => {
     />
   ) : (
     <PostList query={{ ...props.postQuery, search: searchQuery }} {...props} />
-  )
-}
+  );
+};
 
 export const SearchPost = ({ style, ...props }) => {
-  const [search, setSearch] = React.useState("")
-  const [searchQuery, setSearchQuery] = React.useState("")
-  const [isLoading, setIsLoading] = React.useState(false)
+  const [search, setSearch] = React.useState("");
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const debounceHandleChange = React.useCallback(
     debounce((value) => setSearchQuery(value), 1000),
     []
-  )
+  );
 
   const updateSearch = (search) => {
-    setSearch(search)
-    debounceHandleChange(search)
-  }
+    setSearch(search);
+    debounceHandleChange(search);
+  };
 
   const handleShowLoading = (value) => {
-    setIsLoading(value)
-  }
+    setIsLoading(value);
+  };
 
   return (
     <View>
@@ -77,7 +77,7 @@ export const SearchPost = ({ style, ...props }) => {
         value={search}
         platform="android"
         showLoading={isLoading}
-        containerStyle={style}
+        // containerStyle={style}
         placeholder="search"
       />
       <SearchPostComp
@@ -86,5 +86,5 @@ export const SearchPost = ({ style, ...props }) => {
         onLoading={handleShowLoading}
       />
     </View>
-  )
-}
+  );
+};

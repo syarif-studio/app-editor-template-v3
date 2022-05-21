@@ -1,6 +1,6 @@
 import React from "react";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { View, Platform } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { View } from "react-native";
 import { config } from "./config";
 import Route from "./src/Route";
 import { RecoilRoot } from "recoil";
@@ -64,7 +64,7 @@ export default function App() {
           </SafeAreaProvider>
         </SWRConfig>
       </RecoilRoot>
-      <StatusBar style={colorMode === "dark" ? "light" : "dark"} />
+      {/* <StatusBar style={colorMode === "dark" ? "light" : "dark"} /> */}
     </View>
   );
 }
