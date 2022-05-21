@@ -64,7 +64,10 @@ export default function App() {
           </SafeAreaProvider>
         </SWRConfig>
       </RecoilRoot>
-      {/* <StatusBar style={colorMode === "dark" ? "light" : "dark"} /> */}
+      <StatusBar
+        translucent={false}
+        style={colorMode === "dark" ? "light" : "dark"}
+      />
     </View>
   );
 }
