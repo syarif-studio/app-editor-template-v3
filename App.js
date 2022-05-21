@@ -66,7 +66,9 @@ export default function App() {
       </RecoilRoot>
       <StatusBar
         translucent={false}
-        style={colorMode === "dark" ? "light" : "dark"}
+        // style={colorMode === "dark" ? "light" : "dark"}
+        style="light"
+        backgroundColor="#000"
       />
     </View>
   );
