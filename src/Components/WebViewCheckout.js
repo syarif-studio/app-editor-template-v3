@@ -3,8 +3,9 @@ import { View, Platform } from "react-native";
 import { WebView } from "react-native-webview";
 import { useCart } from "../Hook";
 import { useAsyncStorage } from "@react-native-async-storage/async-storage";
+import { Spinner } from "@ui-kitten/components";
 
-export const WooCheckout = ({ checkoutUrl, ...props }) => {
+export const WebViewCheckout = ({ checkoutUrl, ...props }) => {
   const {
     cart: { items },
     resetCart,
@@ -60,12 +61,14 @@ export const WooCheckout = ({ checkoutUrl, ...props }) => {
   };
 
   return (
-    <View style={{ flex: 1, padding: 16 }}>
+    <View style={{ flex: 1 }}>
       {Platform.OS === "android" ? (
         <WebView
           source={{ uri: url }}
           scalesPageToFit={false}
           onMessage={handleMessage}
+          startInLoadingState={true}
+          renderLoading={() => <LoadingSpinner />}
         />
       ) : (
         <iframe
@@ -81,3 +84,20 @@ export const WooCheckout = ({ checkoutUrl, ...props }) => {
     </View>
   );
 };
+
+function LoadingSpinner() {
+  return (
+    <View
+      style={{
+        position: "absolute",
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100%",
+        width: "100%",
+      }}
+    >
+      <Spinner size="large" />
+    </View>
+  );
+}

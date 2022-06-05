@@ -17,10 +17,10 @@ async function fetchData(json) {
   let products = [];
   if (query?.bestSeller) {
     let response = await wooapi.get("reports/top_sellers", { period: "year" });
-    let bestSellerQuery = { ...query };
+    let { bestSeller, ...bestSellerQuery } = query;
     if (response?.data?.length) {
       const include = response?.data?.map((item) => item.product_id).join();
-      bestSellerQuery = { ...query, include };
+      bestSellerQuery = { ...bestSellerQuery, include };
     }
     products = await fetchProduct(bestSellerQuery);
   } else {

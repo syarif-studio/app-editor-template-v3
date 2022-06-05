@@ -8,7 +8,7 @@ export * from "./Cart";
 export * from "./Button";
 export * from "./Carousel";
 export * from "./WooSingleProduct";
-export * from "./WooCheckout";
+export * from "./WebViewCheckout";
 export * from "./NativeCheckout";
 export * from "./Form";
 export * from "./TextInput";

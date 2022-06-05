@@ -53,7 +53,6 @@ export default function App() {
           value={{
             revalidateOnFocus: false,
             refreshInterval: 0,
-            errorRetryCount: 3,
             fetcher,
           }}
         >

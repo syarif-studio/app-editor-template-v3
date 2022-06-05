@@ -1,5 +1,10 @@
 import React from "react";
-import { View, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  ScrollView,
+  TouchableOpacity,
+  RefreshControl,
+} from "react-native";
 import { Layout } from "@ui-kitten/components";
 import { useItem, usePostContent } from "../Hook";
 import { useNavigation } from "@react-navigation/native";
@@ -23,6 +28,29 @@ const TouchableContainer = ({ style, navigateTo, children, ...restProps }) => {
         {children}
       </View>
     </TouchableOpacity>
+  );
+};
+
+const wait = (timeout) => {
+  return new Promise((resolve) => setTimeout(resolve, timeout));
+};
+
+const ScrollViewWrapper = ({ children, ...props }) => {
+  const [refreshing, setRefreshing] = React.useState(false);
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
+
+  return (
+    <ScrollView
+      {...props}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      {children}
+    </ScrollView>
   );
 };
 
