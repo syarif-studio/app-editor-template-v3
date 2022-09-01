@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "app-editor-template-v2",
-    "slug": "app-editor-template-v2",
+    "name": "app-editor-template-v3",
+    "slug": "app-editor-template-v3",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,7 +18,7 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.syarifstudio.aet2",
+      "package": "com.syarifstudio.aet3",
       "versionCode": 1
     },
     "web": {
