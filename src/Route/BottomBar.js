@@ -4,6 +4,8 @@ import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Icon } from "react-native-elements";
 import Page from "../Page";
+import { useRecoilValue } from "recoil";
+import { generalCart } from "../Hook";
 
 function getOptions(route, pages) {
   const routeName = getFocusedRouteNameFromRoute(route);
@@ -54,6 +56,7 @@ function DefaultTab({ children, pages }) {
 }
 
 export default function BottomBar({ navigation, route, pages }) {
+  const cart = useRecoilValue(generalCart);
   React.useLayoutEffect(() => {
     const options = getOptions(route, pages);
     navigation.setOptions({ ...options });
@@ -67,7 +70,19 @@ export default function BottomBar({ navigation, route, pages }) {
     <DefaultTab pages={pages}>
       {Array.isArray(bottomNavPages) &&
         bottomNavPages.map((page) => {
-          return (
+          return page.isCart ? (
+            <Tab.Screen
+              key={page.slug}
+              name={`tab-${page.slug}`}
+              options={{
+                title: page.name,
+                headerShown: page.showHeaderBar,
+                tabBarBadge: cart?.items?.length ?? 0,
+              }}
+            >
+              {(props) => <Page {...props} page={page} />}
+            </Tab.Screen>
+          ) : (
             <Tab.Screen
               key={page.slug}
               name={`tab-${page.slug}`}

@@ -3,6 +3,7 @@ import { useCart } from "../Cart";
 import { useForm } from "../Form";
 import { useItem } from "../PostContent";
 import { useNavigation } from "@react-navigation/native";
+import { config } from "../../../config";
 
 const ActionContext = React.createContext();
 
@@ -11,6 +12,8 @@ function ActionProvider({ value, children }) {
     <ActionContext.Provider value={value}>{children}</ActionContext.Provider>
   );
 }
+
+const pages = config.pages;
 
 function useAction({ navigateTo = "" }) {
   const navigation = useNavigation();
@@ -22,10 +25,25 @@ function useAction({ navigateTo = "" }) {
     switch (action) {
       case "navigate":
         if (navigateTo) {
+          const isBottomNavPage = pages?.find(
+            (item) => item.slug === navigateTo
+          )?.addToBottomNav;
+
           if (item) {
-            navigation.push(navigateTo, { item });
+            if (isBottomNavPage) {
+              navigation.navigate("BottomTab", {
+                screen: `tab-${navigateTo}`,
+                item,
+              });
+            } else {
+              navigation.push(navigateTo, { item });
+            }
           } else {
-            navigation.push(navigateTo);
+            if (isBottomNavPage) {
+              navigation.navigate("BottomTab", { screen: `tab-${navigateTo}` });
+            } else {
+              navigation.push(navigateTo);
+            }
           }
         }
         break;

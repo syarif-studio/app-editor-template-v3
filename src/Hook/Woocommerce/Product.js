@@ -6,6 +6,17 @@ import { useItem } from "../PostContent";
 import { useCache } from "../Cache";
 
 async function fetchProduct(query) {
+  if (query?.related) {
+    delete query.related;
+    query = { ...query, category: product.categories?.[0]?.id };
+  }
+
+  //remove query with false value
+  Object.keys(query).forEach((key) => {
+    if (query[key] === false) {
+      delete query[key];
+    }
+  });
   const response = await wooapi.get("products", query);
   return response?.data;
 }

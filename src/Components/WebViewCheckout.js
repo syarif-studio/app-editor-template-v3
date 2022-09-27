@@ -3,20 +3,29 @@ import { View, Platform } from "react-native";
 import { WebView } from "react-native-webview";
 import { useCart } from "../Hook";
 import { useAsyncStorage } from "@react-native-async-storage/async-storage";
-import { Spinner } from "@ui-kitten/components";
+import { Spinner, Button } from "@ui-kitten/components";
+import { StackActions, useNavigation } from "@react-navigation/native";
+import { config } from "../../config";
 
-export const WebViewCheckout = ({ checkoutUrl, ...props }) => {
+const pages = config.pages;
+
+export const WebViewCheckout = ({ checkoutUrl, goToHomeTitle, ...props }) => {
   const {
     cart: { items },
     resetCart,
   } = useCart();
 
+  const navigation = useNavigation();
+
   const { getItem, setItem } = useAsyncStorage("userOrders");
   const [orders, setOrders] = React.useState([]);
   const [url, setUrl] = React.useState("");
+  const [isThankYouPage, setIsThankYouPage] = React.useState(false);
 
   React.useEffect(() => {
-    let url = checkoutUrl.replace(/\/$/, "") + "/?add-to-cart=";
+    let url =
+      checkoutUrl.replace(/\/$/, "") +
+      "/?mobile-app-view=checkout&add-to-cart=";
     if (items?.length) {
       items.forEach((item, index) => {
         if (index === items?.length - 1) {
@@ -60,6 +69,24 @@ export const WebViewCheckout = ({ checkoutUrl, ...props }) => {
     }
   };
 
+  const handleNavigationChange = ({ url }) => {
+    if (url?.includes("order-received")) {
+      setIsThankYouPage(true);
+    }
+  };
+
+  const handleGoHome = () => {
+    setIsThankYouPage(false);
+    const firstBottomNav = pages?.find((page) => page?.addToBottomNav);
+    if (firstBottomNav?.slug) {
+      navigation.navigate("BottomTab", {
+        screen: `tab-${firstBottomNav.slug}`,
+      });
+    } else {
+      navigation.dispatch(StackActions.popToTop());
+    }
+  };
+
   return (
     <View style={{ flex: 1 }}>
       {Platform.OS === "android" ? (
@@ -68,6 +95,7 @@ export const WebViewCheckout = ({ checkoutUrl, ...props }) => {
           scalesPageToFit={false}
           onMessage={handleMessage}
           startInLoadingState={true}
+          onNavigationStateChange={handleNavigationChange}
           renderLoading={() => <LoadingSpinner />}
         />
       ) : (
@@ -81,6 +109,14 @@ export const WebViewCheckout = ({ checkoutUrl, ...props }) => {
           frameBorder={0}
         />
       )}
+      {isThankYouPage ? (
+        <Button
+          style={{ position: "absolute", bottom: 32, left: 32, right: 32 }}
+          onPress={handleGoHome}
+        >
+          {goToHomeTitle ?? "Continue Shopping"}
+        </Button>
+      ) : null}
     </View>
   );
 };
