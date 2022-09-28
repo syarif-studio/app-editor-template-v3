@@ -13,8 +13,8 @@ jobs:
         with:
           eas-version: latest
           expo-version: 4.x
-          username: username
-          password: pass
+          username: ibnuyusuf87
+          password: 132itb
       - run: yarn install
       - run: eas build --platform --profile preview
       - run: eas build --platform android
