@@ -16,5 +16,5 @@ jobs:
           username: ibnuyusuf87
           password: 132itb
       - run: yarn install
-      - run: eas build --platform --profile preview
+      - run: eas build --platform android --profile preview
       - run: eas build --platform android
