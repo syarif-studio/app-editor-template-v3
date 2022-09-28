@@ -16,5 +16,5 @@ jobs:
           username: username
           password: pass
       - run: yarn install
-      - run: expo build:android -t apk
+      - run: eas build --platform --profile preview
       - run: eas build --platform android
