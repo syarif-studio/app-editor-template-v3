@@ -15,6 +15,7 @@ import fontSemibold from "./assets/fonts/font-semibold.ttf";
 import Init from "./src/Init";
 import AppLoading from "expo-app-loading";
 import { StatusBar } from "expo-status-bar";
+import { cacheProvider } from "./src/Cache";
 
 const { colorMode, colorTheme } = config;
 
@@ -54,6 +55,7 @@ export default function App() {
             revalidateOnFocus: false,
             refreshInterval: 0,
             fetcher,
+            provider: cacheProvider,
           }}
         >
           <SafeAreaProvider>

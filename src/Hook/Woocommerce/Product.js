@@ -3,7 +3,6 @@ import useSWR from "swr";
 import { PostTypeProvider } from "../PostTypeContext";
 import { wooapi } from "../../Api";
 import { useItem } from "../PostContent";
-import { useCache } from "../Cache";
 
 async function fetchProduct(query) {
   if (query?.related) {
@@ -50,8 +49,7 @@ function useGetProductData(query = {}) {
 
   const json = JSON.stringify({ postType: "product", ...query });
   const { data, isValidating } = useSWR(json, fetchData);
-  const cache = useCache(json, !data);
-  return { data: data ?? cache, isLoading: isValidating };
+  return { data, isLoading: isValidating };
 }
 
 function ProductRoot({ children }) {

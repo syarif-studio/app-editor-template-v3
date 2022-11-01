@@ -1,5 +1,5 @@
+import useSWR from "swr";
 import { wooapi } from "../../Api";
-import { useSWRCache } from "../Cache";
 
 async function fetchData(url) {
   const response = await wooapi.get(url);
@@ -48,7 +48,7 @@ function convertSymbolsFromCode(name = "") {
 }
 
 export function useWooSettings() {
-  return useSWRCache("settings/general", fetchData);
+  return useSWR("settings/general", fetchData);
 }
 
 export function useWooPriceFormat(amount) {

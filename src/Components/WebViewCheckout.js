@@ -19,32 +19,21 @@ export const WebViewCheckout = ({ checkoutUrl, goToHomeTitle, ...props }) => {
 
   const { getItem, setItem } = useAsyncStorage("userOrders");
   const [orders, setOrders] = React.useState([]);
-  const [url, setUrl] = React.useState("");
   const [isThankYouPage, setIsThankYouPage] = React.useState(false);
 
-  React.useEffect(() => {
-    let url =
-      checkoutUrl.replace(/\/$/, "") +
-      "/?mobile-app-view=checkout&add-to-cart=";
-    if (items?.length) {
-      items.forEach((item, index) => {
-        if (index === items?.length - 1) {
-          url += item?.id;
-        } else {
-          url += item?.id + ",";
-        }
-      });
-      url += "&qty=";
-      items.forEach((item, index) => {
-        if (index === items?.length - 1) {
-          url += item?.qty;
-        } else {
-          url += item?.qty + ",";
-        }
-      });
-      setUrl(url);
-    }
-  }, [items, checkoutUrl]);
+  let url =
+    checkoutUrl.replace(/\/$/, "") + "/?mobile-app-view=checkout&add-to-cart=";
+  if (items.length > 1) {
+    items.forEach((item, index) => {
+      if (index === items?.length - 1) {
+        url += `${item?.id}:${item?.qty}`;
+      } else {
+        url += `${item?.id}:${item?.qty},`;
+      }
+    });
+  } else if (items.length === 1) {
+    url += `${items[0].id}&quantity=${items[0].qty}`;
+  }
 
   const readItemFromStorage = React.useCallback(async () => {
     const item = await getItem();

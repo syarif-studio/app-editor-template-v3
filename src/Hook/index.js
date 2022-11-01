@@ -8,4 +8,3 @@ export * from "./Form";
 export * from "./Cart";
 export * from "./CustomPropsContext";
 export * from "./ProductVariationContext";
-export * from "./Cache";

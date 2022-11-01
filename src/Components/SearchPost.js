@@ -57,7 +57,7 @@ export const SearchPost = ({ style, ...props }) => {
   const [isLoading, setIsLoading] = React.useState(false);
 
   const debounceHandleChange = React.useCallback(
-    debounce((value) => setSearchQuery(value), 1000),
+    debounce((value) => setSearchQuery(value), 300),
     []
   );
 
@@ -66,9 +66,9 @@ export const SearchPost = ({ style, ...props }) => {
     debounceHandleChange(search);
   };
 
-  const handleShowLoading = (value) => {
+  const handleShowLoading = React.useCallback((value) => {
     setIsLoading(value);
-  };
+  }, []);
 
   return (
     <View>

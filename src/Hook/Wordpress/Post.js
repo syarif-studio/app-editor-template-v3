@@ -2,7 +2,6 @@ import React from "react";
 import useSWR from "swr";
 import { PostTypeProvider } from "../PostTypeContext";
 import { wpapi } from "../../Api";
-import { useCache } from "../Cache";
 
 async function fetchPost(json) {
   const param = JSON.parse(json);
@@ -37,8 +36,7 @@ async function fetchPost(json) {
 function useGetPostData(query = {}, postType = "post") {
   const json = JSON.stringify({ postType, ...query });
   const { data } = useSWR(json, fetchPost);
-  const cache = useCache(json, !data);
-  return { data: data ?? cache, isLoading: !data };
+  return { data, isLoading: !data };
 }
 
 function PostRoot({ children, postType }) {

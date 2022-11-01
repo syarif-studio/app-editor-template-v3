@@ -4,10 +4,10 @@ import { wooapi } from "../../Api";
 import { useCart } from "../Cart";
 import { config } from "../../../config";
 import { useNavigation, CommonActions } from "@react-navigation/native";
-import { useSWRCache } from "../Cache";
 import { useWooSettings } from "./Utility";
 import { countries } from "./Countries";
 import { useAsyncStorage } from "@react-native-async-storage/async-storage";
+import useSWR from "swr";
 
 export const wooBillingData = atom({
   key: "wooBillingData",
@@ -209,7 +209,7 @@ async function fetchShippingMethods(url) {
 export function useShippingMethods() {
   const billingData = useRecoilValue(wooBillingData);
 
-  const dataZones = useSWRCache("shipping/zones", fetchZones);
+  const { data: dataZones } = useSWR("shipping/zones", fetchZones);
   const shippingMethodUrl = () => {
     if (!dataZones) return null;
     const { zones, locations } = dataZones;
@@ -230,6 +230,10 @@ export function useShippingMethods() {
     return `shipping/zones/${selectedZone}/methods`;
   };
 
-  const shippingMethods = useSWRCache(shippingMethodUrl, fetchShippingMethods);
+  const { data: shippingMethods } = useSWR(
+    shippingMethodUrl,
+    fetchShippingMethods
+  );
+
   return shippingMethods;
 }

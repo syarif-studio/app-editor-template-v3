@@ -1,15 +1,10 @@
 import React, { useEffect, useRef } from "react";
-import { syncWithAsyncStorage } from "../Hook";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import { Platform } from "react-native";
 import { config } from "../../config";
 
 export default function Init() {
-  useEffect(() => {
-    syncWithAsyncStorage();
-  }, []);
-
   return Platform.OS === "android" && config.enablePushNotif ? (
     <PushNotif />
   ) : null;
