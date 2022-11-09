@@ -27,8 +27,6 @@ export default function WooPayOrder({ route }) {
     updateOrders(orderId);
   };
 
-  console.log({ url });
-
   return Platform.OS === "android" ? (
     <WebView
       key={tryCount}

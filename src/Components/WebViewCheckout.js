@@ -36,8 +36,6 @@ export const WebViewCheckout = ({ checkoutUrl, goToHomeTitle, ...props }) => {
     }
   });
 
-  console.log({ url });
-
   const readItemFromStorage = React.useCallback(async () => {
     const item = await getItem();
     const items = JSON.parse(item);
