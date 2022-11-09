@@ -14,7 +14,8 @@ export const WooAddToCart = (props) => {
   const [qty, setQty] = useState("1");
 
   const handleOnPress = React.useCallback(() => {
-    if (item?.variations?.length) addCart(variation, qty);
+    if (item?.variations?.length && variation?.id)
+      addCart({ ...item, variation: variation.id }, qty);
     else addCart(item, qty);
   }, [addCart, item, variation, qty]);
 

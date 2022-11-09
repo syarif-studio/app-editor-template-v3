@@ -22,18 +22,21 @@ export const WebViewCheckout = ({ checkoutUrl, goToHomeTitle, ...props }) => {
   const [isThankYouPage, setIsThankYouPage] = React.useState(false);
 
   let url =
-    checkoutUrl.replace(/\/$/, "") + "/?mobile-app-view=checkout&add-to-cart=";
-  if (items.length > 1) {
-    items.forEach((item, index) => {
+    checkoutUrl.replace(/\/$/, "") +
+    "/?mobile-app-view=checkout&app-add-to-cart=";
+
+  items.forEach((item, index) => {
+    if (item?.id) {
+      const id = item?.variation ? `${item.id}-${item.variation}` : item.id;
       if (index === items?.length - 1) {
-        url += `${item?.id}:${item?.qty}`;
+        url += `${id}:${item?.qty}`;
       } else {
-        url += `${item?.id}:${item?.qty},`;
+        url += `${id}:${item?.qty},`;
       }
-    });
-  } else if (items.length === 1) {
-    url += `${items[0].id}&quantity=${items[0].qty}`;
-  }
+    }
+  });
+
+  console.log({ url });
 
   const readItemFromStorage = React.useCallback(async () => {
     const item = await getItem();
