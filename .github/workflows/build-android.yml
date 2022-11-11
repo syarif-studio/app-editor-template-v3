@@ -11,7 +11,7 @@ jobs:
           node-version: 14.x
       - uses: expo/expo-github-action@v6
         with:
-          eas-version: latest
+          eas-version: 2.1.x
           expo-version: 4.x
           username: ${{username}}
           password: ${{pass}}
