@@ -10,60 +10,10 @@ import { config } from "../../config";
 const pages = config.pages;
 
 export const WebViewCheckout = ({ checkoutUrl, goToHomeTitle, ...props }) => {
-  const {
-    cart: { items },
-    resetCart,
-  } = useCart();
-
   const navigation = useNavigation();
-
-  const { getItem, setItem } = useAsyncStorage("userOrders");
-  const [orders, setOrders] = React.useState([]);
   const [isThankYouPage, setIsThankYouPage] = React.useState(false);
-
-  let url =
-    checkoutUrl.replace(/\/$/, "") +
-    "/?mobile-app-view=checkout&app-add-to-cart=";
-
-  items.forEach((item, index) => {
-    if (item?.id) {
-      const id = item?.variation ? `${item.id}-${item.variation}` : item.id;
-      if (index === items?.length - 1) {
-        url += `${id}:${item?.qty}`;
-      } else {
-        url += `${id}:${item?.qty},`;
-      }
-    }
-  });
-
-  const readItemFromStorage = React.useCallback(async () => {
-    const item = await getItem();
-    const items = JSON.parse(item);
-    setOrders(items || []);
-  }, []);
-
-  const writeItemToStorage = async (newValue) => {
-    await setItem(JSON.stringify(newValue));
-    setOrders(newValue);
-  };
-
-  React.useEffect(() => {
-    readItemFromStorage();
-  }, [readItemFromStorage]);
-
-  const handleMessage = (event) => {
-    const order_id = event.nativeEvent.data;
-    if (orders.indexOf(order_id) === -1) {
-      writeItemToStorage([...orders, order_id]);
-      resetCart();
-    }
-  };
-
-  const handleNavigationChange = ({ url }) => {
-    if (url?.includes("order-received")) {
-      setIsThankYouPage(true);
-    }
-  };
+  const { getItem, setItem } = useAsyncStorage("userOrders");
+  const { resetCart } = useCart();
 
   const handleGoHome = () => {
     setIsThankYouPage(false);
@@ -77,16 +27,27 @@ export const WebViewCheckout = ({ checkoutUrl, goToHomeTitle, ...props }) => {
     }
   };
 
+  const handleThankYouPage = React.useCallback(() => {
+    setIsThankYouPage(true);
+  }, []);
+
+  const updateCartOrderData = React.useCallback(async (orderId) => {
+    const item = await getItem();
+    const orders = JSON.parse(item);
+    if (!orders || orders.indexOf(orderId) === -1) {
+      const newOrders = orders ? [...orders, orderId] : [orders];
+      await setItem(JSON.stringify(newOrders));
+    }
+    resetCart();
+  }, []);
+
   return (
     <View style={{ flex: 1 }}>
       {Platform.OS === "android" ? (
-        <WebView
-          source={{ uri: url }}
-          scalesPageToFit={false}
-          onMessage={handleMessage}
-          startInLoadingState={true}
-          onNavigationStateChange={handleNavigationChange}
-          renderLoading={() => <LoadingSpinner />}
+        <MemoizedWebView
+          checkoutUrl={checkoutUrl}
+          onThankYouPage={handleThankYouPage}
+          onUpdateOrder={updateCartOrderData}
         />
       ) : (
         <iframe
@@ -110,6 +71,56 @@ export const WebViewCheckout = ({ checkoutUrl, goToHomeTitle, ...props }) => {
     </View>
   );
 };
+
+const MemoizedWebView = React.memo(function WebViewComponent({
+  checkoutUrl,
+  onThankYouPage,
+  onUpdateOrder,
+}) {
+  const {
+    cart: { items },
+  } = useCart();
+
+  let url =
+    checkoutUrl.replace(/\/$/, "") +
+    "/?mobile-app-view=checkout&app-add-to-cart=";
+
+  items.forEach((item, index) => {
+    if (item?.id) {
+      const id = item?.variation ? `${item.id}-${item.variation}` : item.id;
+      if (index === items?.length - 1) {
+        url += `${id}:${item?.qty}`;
+      } else {
+        url += `${id}:${item?.qty},`;
+      }
+    }
+  });
+
+  const urlRef = React.useRef(url);
+
+  const handleMessage = (event) => {
+    const orderId = event.nativeEvent.data;
+    onUpdateOrder(orderId);
+  };
+
+  const handleNavigationChange = ({ url }) => {
+    if (url?.includes("order-received")) {
+      urlRef.current = url;
+      onThankYouPage();
+    }
+  };
+
+  return (
+    <WebView
+      source={{ uri: urlRef.current }}
+      scalesPageToFit={false}
+      onMessage={handleMessage}
+      startInLoadingState={true}
+      onNavigationStateChange={handleNavigationChange}
+      renderLoading={() => <LoadingSpinner />}
+    />
+  );
+});
 
 function LoadingSpinner() {
   return (
