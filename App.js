@@ -26,7 +26,11 @@ function AppProvider({ children }) {
   const theme =
     colorMode === "dark"
       ? { ...eva.dark, ...colorTheme }
-      : { ...eva.light, ...colorTheme };
+      : {
+          ...eva.light,
+          ...colorTheme,
+          "background-basic-color-1": "transparent",
+        };
 
   return (
     <ApplicationProvider {...eva} theme={theme} customMapping={mappingFont}>
