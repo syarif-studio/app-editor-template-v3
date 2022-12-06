@@ -1,5 +1,5 @@
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import {
   createStackNavigator,
   TransitionPresets,
@@ -10,13 +10,20 @@ import WooPayOrder from "../Page/WooPayOrder";
 import BottomBar from "./BottomBar";
 
 const Stack = createStackNavigator();
+const ContainerTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: "#FFF",
+  },
+};
 
 export default function Route() {
   const pages = config.pages;
   const firstBottomNav = pages?.find((page) => page?.addToBottomNav);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={ContainerTheme}>
       <Stack.Navigator
         screenOptions={{
           ...TransitionPresets.SlideFromRightIOS,
